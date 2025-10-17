@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: retomas-backend
+    env: docker
+    plan: free
+    region: oregon
+    repo: autozarco/retomas
+    branch: main
+    dockerfilePath: backend/Dockerfile
+  - type: web
+    name: retomas-frontend
+    env: docker
+    plan: free
+    region: oregon
+    repo: autozarco/retomas
+    branch: main
+    dockerfilePath: frontend/Dockerfile
