@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Retomas Auto Zarco</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0;padding:0}
+    .container{max-width:1000px;margin:40px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.08)}
+    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .btn{background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;border:none;cursor:pointer}
+    input,select,textarea{padding:8px;width:100%;margin:6px 0;border:1px solid #ddd;border-radius:6px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    .badge{background:#fde68a;padding:4px 8px;border-radius:6px}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+  const { useState, useEffect } = React;
+  function api(path, opts={}){
+    const token = localStorage.getItem('token');
+    const headers = opts.headers||{};
+    if(token) headers['Authorization'] = 'Bearer ' + token;
+    return fetch('/api' + path, {...opts, headers}).then(async r=>{
+      if(r.ok) return r.json().catch(()=>null);
+      const text = await r.text().catch(()=>'');
+      throw new Error(text || r.status);
+    });
+  }
+  function Login({onLogin}){
+    const [username,setUsername]=useState('admin');
+    const [password,setPassword]=useState('admin123');
+    const [twofa,setTwofa]=useState('');
+    async function submit(e){
+      e.preventDefault();
+      try{
+        const res = await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password, token2: twofa||undefined})});
+        const data = await res.json();
+        if(res.ok){ localStorage.setItem('token', data.token); onLogin(); }
+        else { alert(data.error || 'Erro'); }
+      }catch(err){ alert('Erro: '+err.message); }
+    }
+    return (<div className="container">
+      <h2>Retomas Auto Zarco — Iniciar Sessão</h2>
+      <form onSubmit={submit}>
+        <label>Nome de utilizador</label>
+        <input value={username} onChange={e=>setUsername(e.target.value)} />
+        <label>Palavra-passe</label>
+        <input type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+        <label>2FA (opcional)</label>
+        <input value={twofa} onChange={e=>setTwofa(e.target.value)} placeholder="Código 2FA" />
+        <button className="btn" type="submit">Entrar</button>
+      </form>
+    </div>);
+  }
+  function Dashboard(){ 
+    const [retomas,setRetomas]=useState([]);
+    const [loading,setLoading]=useState(true);
+    const [form,setForm]=useState({cliente:'',marca_modelo:'',matricula:'',valor:''});
+    async function load(){ try{ const data = await api('/retomas'); setRetomas(data||[]); setLoading(false); } catch(e){ alert(e.message); setLoading(false); } }
+    useEffect(()=>{ load(); },[]);
+    async function add(e){ e.preventDefault(); try{ await api('/retomas',{method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(form)}); setForm({cliente:'',marca_modelo:'',matricula:'',valor:''}); load(); }catch(e){ alert('Erro: '+e.message); } }
+    async function exportCSV(){ try{ const r = await fetch('/api/retomas/export/csv',{headers:{'Authorization':'Bearer '+localStorage.getItem('token')}}); const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'retomas.csv'; a.click(); }catch(e){ alert(e.message); } }
+    async function exportPDF(){ try{ const r = await fetch('/api/retomas/export/pdf',{headers:{'Authorization':'Bearer '+localStorage.getItem('token')}}); const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'retomas.pdf'; a.click(); }catch(e){ alert(e.message); } }
+    return (<div className="container">
+      <div className="header">
+        <h2>Retomas Auto Zarco — Dashboard</h2>
+        <div>
+          <button className="btn" onClick={()=>{ localStorage.removeItem('token'); location.reload(); }}>Sair</button>
+        </div>
+      </div>
+      <div style={{display:'flex',gap:20}}>
+        <div style={{flex:2}}>
+          <h3>Retomas pendentes</h3>
+          {loading? <div>Carregando...</div> : (
+            <table>
+              <thead><tr><th>ID</th><th>Cliente</th><th>Veículo</th><th>Matrícula</th><th>Valor</th><th>Estado</th></tr></thead>
+              <tbody>{retomas.map(r=>(<tr key={r.id}><td>{r.id}</td><td>{r.cliente}</td><td>{r.marca_modelo}</td><td>{r.matricula}</td><td>{r.valor}</td><td><span className="badge">{r.status}</span></td></tr>))}</tbody>
+            </table>
+          )}
+          <div style={{marginTop:12}}>
+            <button className="btn" onClick={exportCSV}>Exportar CSV</button>
+            <button className="btn" style={{marginLeft:8}} onClick={exportPDF}>Exportar PDF</button>
+          </div>
+        </div>
+        <div style={{flex:1}}>
+          <h3>Adicionar Retoma</h3>
+          <form onSubmit={add}>
+            <label>Cliente</label><input value={form.cliente} onChange={e=>setForm({...form,cliente:e.target.value})} />
+            <label>Marca / Modelo</label><input value={form.marca_modelo} onChange={e=>setForm({...form,marca_modelo:e.target.value})} />
+            <label>Matrícula</label><input value={form.matricula} onChange={e=>setForm({...form,matricula:e.target.value})} />
+            <label>Valor</label><input value={form.valor} onChange={e=>setForm({...form,valor:e.target.value})} />
+            <button className="btn" type="submit">Guardar</button>
+          </form>
+          <h4 style={{marginTop:20}}>Mapa de danos (simulado)</h4>
+          <div style={{height:200,background:'#eef2ff',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center'}}>Mapa interativo (placeholder)</div>
+        </div>
+      </div>
+    </div>);
+  }
+  function App(){ const [authed,setAuthed]=useState(!!localStorage.getItem('token')); return authed? <Dashboard /> : <Login onLogin={()=>setAuthed(true)} />; }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
