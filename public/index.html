@@ -3,108 +3,1046 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Retomas Auto Zarco</title>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <title>AUTO ZARCO - Avaliação de Retoma</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;margin:0;padding:0}
-    .container{max-width:1000px;margin:40px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 4px 14px rgba(0,0,0,0.08)}
-    .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-    .btn{background:#2563eb;color:#fff;padding:8px 12px;border-radius:6px;border:none;cursor:pointer}
-    input,select,textarea{padding:8px;width:100%;margin:6px 0;border:1px solid #ddd;border-radius:6px}
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-    .badge{background:#fde68a;padding:4px 8px;border-radius:6px}
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #2d3748;
+    }
+    .top-bar {
+      background: #1a202c;
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .top-bar h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .top-bar .logo {
+      color: #fbbf24;
+      font-weight: 700;
+      font-size: 24px;
+    }
+    .top-bar .user-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .top-bar .badge {
+      background: #3b82f6;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .card-header h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a202c;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #4a5568;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #f7fafc;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s;
+    }
+    .checkbox-item:hover {
+      background: #edf2f7;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .checkbox-item label {
+      font-size: 14px;
+      cursor: pointer;
+      flex: 1;
+      margin: 0;
+    }
+    .checkbox-item.checked {
+      background: #d1fae5;
+      border-color: #10b981;
+    }
+    .checkbox-item.unchecked {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn-secondary {
+      background: #6b7280;
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+    }
+    .btn-success:hover {
+      background: #059669;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+    .btn-danger:hover {
+      background: #dc2626;
+    }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .damage-map {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      aspect-ratio: 4/3;
+      background: #f0f4f8;
+      border: 2px solid #cbd5e0;
+      border-radius: 12px;
+      cursor: crosshair;
+    }
+    .damage-map svg {
+      width: 100%;
+      height: 100%;
+    }
+    .damage-point {
+      fill: #ef4444;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .damage-point:hover {
+      fill: #dc2626;
+      transform: scale(1.2);
+    }
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .login-card h2 {
+      margin: 0 0 24px;
+      text-align: center;
+      color: #1a202c;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 20px;
+    }
+    .tab {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: #6b7280;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      background: #f7fafc;
+      font-weight: 600;
+      font-size: 13px;
+      color: #4a5568;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    tr:hover {
+      background: #f7fafc;
+    }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-block;
+    }
+    .status-pendente { background: #fef3c7; color: #92400e; }
+    .status-aprovado { background: #d1fae5; color: #065f46; }
+    .status-rejeitado { background: #fee2e2; color: #991b1b; }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: #e2e8f0;
+      border: none;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      background: #cbd5e0;
+    }
+    .error-message {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left: 4px solid #ef4444;
+    }
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left: 4px solid #10b981;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .card { padding: 16px; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
-  const { useState, useEffect } = React;
-  function api(path, opts={}){
-    const token = localStorage.getItem('token');
-    const headers = opts.headers||{};
-    if(token) headers['Authorization'] = 'Bearer ' + token;
-    return fetch('/api' + path, {...opts, headers}).then(async r=>{
-      if(r.ok) return r.json().catch(()=>null);
-      const text = await r.text().catch(()=>'');
-      throw new Error(text || r.status);
-    });
-  }
-  function Login({onLogin}){
-    const [username,setUsername]=useState('admin');
-    const [password,setPassword]=useState('admin123');
-    const [twofa,setTwofa]=useState('');
-    async function submit(e){
-      e.preventDefault();
-      try{
-        const res = await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password, token2: twofa||undefined})});
-        const data = await res.json();
-        if(res.ok){ localStorage.setItem('token', data.token); onLogin(); }
-        else { alert(data.error || 'Erro'); }
-      }catch(err){ alert('Erro: '+err.message); }
-    }
-    return (<div className="container">
-      <h2>Retomas Auto Zarco — Iniciar Sessão</h2>
-      <form onSubmit={submit}>
-        <label>Nome de utilizador</label>
-        <input value={username} onChange={e=>setUsername(e.target.value)} />
-        <label>Palavra-passe</label>
-        <input type="password" value={password} onChange={e=>setPassword(e.target.value)} />
-        <label>2FA (opcional)</label>
-        <input value={twofa} onChange={e=>setTwofa(e.target.value)} placeholder="Código 2FA" />
-        <button className="btn" type="submit">Entrar</button>
-      </form>
-    </div>);
-  }
-  function Dashboard(){ 
-    const [retomas,setRetomas]=useState([]);
-    const [loading,setLoading]=useState(true);
-    const [form,setForm]=useState({cliente:'',marca_modelo:'',matricula:'',valor:''});
-    async function load(){ try{ const data = await api('/retomas'); setRetomas(data||[]); setLoading(false); } catch(e){ alert(e.message); setLoading(false); } }
-    useEffect(()=>{ load(); },[]);
-    async function add(e){ e.preventDefault(); try{ await api('/retomas',{method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(form)}); setForm({cliente:'',marca_modelo:'',matricula:'',valor:''}); load(); }catch(e){ alert('Erro: '+e.message); } }
-    async function exportCSV(){ try{ const r = await fetch('/api/retomas/export/csv',{headers:{'Authorization':'Bearer '+localStorage.getItem('token')}}); const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'retomas.csv'; a.click(); }catch(e){ alert(e.message); } }
-    async function exportPDF(){ try{ const r = await fetch('/api/retomas/export/pdf',{headers:{'Authorization':'Bearer '+localStorage.getItem('token')}}); const blob = await r.blob(); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'retomas.pdf'; a.click(); }catch(e){ alert(e.message); } }
-    return (<div className="container">
-      <div className="header">
-        <h2>Retomas Auto Zarco — Dashboard</h2>
-        <div>
-          <button className="btn" onClick={()=>{ localStorage.removeItem('token'); location.reload(); }}>Sair</button>
-        </div>
-      </div>
-      <div style={{display:'flex',gap:20}}>
-        <div style={{flex:2}}>
-          <h3>Retomas pendentes</h3>
-          {loading? <div>Carregando...</div> : (
-            <table>
-              <thead><tr><th>ID</th><th>Cliente</th><th>Veículo</th><th>Matrícula</th><th>Valor</th><th>Estado</th></tr></thead>
-              <tbody>{retomas.map(r=>(<tr key={r.id}><td>{r.id}</td><td>{r.cliente}</td><td>{r.marca_modelo}</td><td>{r.matricula}</td><td>{r.valor}</td><td><span className="badge">{r.status}</span></td></tr>))}</tbody>
-            </table>
-          )}
-          <div style={{marginTop:12}}>
-            <button className="btn" onClick={exportCSV}>Exportar CSV</button>
-            <button className="btn" style={{marginLeft:8}} onClick={exportPDF}>Exportar PDF</button>
+    const { useState, useEffect } = React;
+
+    const API_URL = '/api';
+
+    const api = {
+      async call(endpoint, options = {}) {
+        const token = localStorage.getItem('token');
+        const headers = { 'Content-Type': 'application/json', ...options.headers };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const res = await fetch(`${API_URL}${endpoint}`, { ...options, headers });
+
+        if (!res.ok) {
+          const error = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(error.error || 'Request failed');
+        }
+
+        return res.json().catch(() => null);
+      },
+
+      auth: {
+        signin: (data) => api.call('/auth/signin', { method: 'POST', body: JSON.stringify(data) }),
+        signout: () => api.call('/auth/signout', { method: 'POST' }),
+        me: () => api.call('/auth/me'),
+      },
+
+      users: {
+        list: () => api.call('/users'),
+        create: (data) => api.call('/users', { method: 'POST', body: JSON.stringify(data) }),
+        update: (id, data) => api.call(`/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+        delete: (id) => api.call(`/users/${id}`, { method: 'DELETE' }),
+      },
+
+      groups: {
+        list: () => api.call('/groups'),
+      },
+
+      retomas: {
+        list: () => api.call('/retomas'),
+        get: (id) => api.call(`/retomas/${id}`),
+        create: (data) => api.call('/retomas', { method: 'POST', body: JSON.stringify(data) }),
+        update: (id, data) => api.call(`/retomas/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+        delete: (id) => api.call(`/retomas/${id}`, { method: 'DELETE' }),
+        exportCSV: () => `${API_URL}/retomas/export/csv`,
+        exportPDF: () => `${API_URL}/retomas/export/pdf`,
+      },
+    };
+
+    function Login({ onLogin }) {
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+      const [error, setError] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        try {
+          const data = await api.auth.signin({ email, password });
+          localStorage.setItem('token', data.session.access_token);
+          localStorage.setItem('user', JSON.stringify(data.profile));
+          onLogin(data.profile);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div className="login-container">
+          <div className="login-card">
+            <div style={{ textAlign: 'center', marginBottom: 24 }}>
+              <div className="logo" style={{ fontSize: 32, color: '#fbbf24' }}>AUTO ZARCO</div>
+              <div style={{ fontSize: 14, color: '#6b7280', marginTop: 8 }}>Sistema de Avaliação de Retomas</div>
+            </div>
+            <h2>Iniciar Sessão</h2>
+            {error && <div className="error-message">{error}</div>}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+              </div>
+              <div className="form-group">
+                <label>Palavra-passe</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+              </div>
+              <button className="btn btn-primary" type="submit" style={{ width: '100%', marginTop: 16 }} disabled={loading}>
+                {loading ? 'A entrar...' : 'Entrar'}
+              </button>
+            </form>
           </div>
         </div>
-        <div style={{flex:1}}>
-          <h3>Adicionar Retoma</h3>
-          <form onSubmit={add}>
-            <label>Cliente</label><input value={form.cliente} onChange={e=>setForm({...form,cliente:e.target.value})} />
-            <label>Marca / Modelo</label><input value={form.marca_modelo} onChange={e=>setForm({...form,marca_modelo:e.target.value})} />
-            <label>Matrícula</label><input value={form.matricula} onChange={e=>setForm({...form,matricula:e.target.value})} />
-            <label>Valor</label><input value={form.valor} onChange={e=>setForm({...form,valor:e.target.value})} />
-            <button className="btn" type="submit">Guardar</button>
-          </form>
-          <h4 style={{marginTop:20}}>Mapa de danos (simulado)</h4>
-          <div style={{height:200,background:'#eef2ff',borderRadius:8,display:'flex',alignItems:'center',justifyContent:'center'}}>Mapa interativo (placeholder)</div>
+      );
+    }
+
+    function DamageMap({ damagePoints = [], onChange }) {
+      const handleClick = (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        onChange([...damagePoints, { x, y, id: Date.now() }]);
+      };
+
+      const removePoint = (id) => {
+        onChange(damagePoints.filter(p => p.id !== id));
+      };
+
+      return (
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <div style={{ fontSize: 14, color: '#6b7280' }}>
+              Clique no mapa para marcar danos ({damagePoints.length} marcações)
+            </div>
+            {damagePoints.length > 0 && (
+              <button className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={() => onChange([])}>
+                Limpar
+              </button>
+            )}
+          </div>
+          <div className="damage-map" onClick={handleClick}>
+            <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
+              <rect x="80" y="50" width="240" height="200" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
+              <rect x="100" y="80" width="80" height="60" fill="#cbd5e0" stroke="#94a3b8" strokeWidth="1" />
+              <rect x="220" y="80" width="80" height="60" fill="#cbd5e0" stroke="#94a3b8" strokeWidth="1" />
+              <circle cx="100" cy="200" r="25" fill="none" stroke="#94a3b8" strokeWidth="2" />
+              <circle cx="300" cy="200" r="25" fill="none" stroke="#94a3b8" strokeWidth="2" />
+              <text x="200" y="160" textAnchor="middle" fontSize="14" fill="#64748b">Vista Frontal</text>
+
+              {damagePoints.map(point => (
+                <circle
+                  key={point.id}
+                  cx={(point.x / 100) * 400}
+                  cy={(point.y / 100) * 300}
+                  r="6"
+                  className="damage-point"
+                  onClick={(e) => { e.stopPropagation(); removePoint(point.id); }}
+                />
+              ))}
+            </svg>
+          </div>
         </div>
-      </div>
-    </div>);
-  }
-  function App(){ const [authed,setAuthed]=useState(!!localStorage.getItem('token')); return authed? <Dashboard /> : <Login onLogin={()=>setAuthed(true)} />; }
-  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+      );
+    }
+
+    function RetomaForm({ onSuccess, onCancel, editData = null }) {
+      const [formData, setFormData] = useState({
+        marca_modelo: '',
+        quilometragem: '',
+        matricula: '',
+        data_matricula: '',
+        combustivel: 'Gasolina',
+        cilindrada: '',
+        reserva_propriedade: false,
+        cliente_nome: '',
+        cliente_telefone: '',
+        cliente_email: '',
+        cliente_nif: '',
+        interessado_em: '',
+        valor_retoma: '',
+        observacoes: '',
+        status: 'pendente',
+        ...editData
+      });
+
+      const [carrocaria, setCarrocaria] = useState({
+        lateral_esquerda: true,
+        lateral_direita: true,
+        frente: true,
+        para_brisas: true,
+        tras: true,
+        oculo_traseiro: true,
+        tejadilho: true,
+        pintura: true,
+        painel_instrumentos: true,
+        estofos: true,
+        tapetes: true,
+        guarnicoes: true,
+        ...(editData?.carrocaria?.[0] || {})
+      });
+
+      const [mecanica, setMecanica] = useState({
+        motor: true,
+        escape: true,
+        transmissao: true,
+        embraiagem: true,
+        cx_velocidades: true,
+        diferencial: true,
+        cardans: true,
+        bateria: true,
+        direcao: true,
+        travoes: true,
+        amortecedores: true,
+        jantes: true,
+        pneus: true,
+        farois: true,
+        outras_luzes: true,
+        ...(editData?.mecanica?.[0] || {})
+      });
+
+      const [damagePoints, setDamagePoints] = useState(editData?.damage_map?.[0]?.damage_points || []);
+      const [error, setError] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        try {
+          const payload = {
+            ...formData,
+            quilometragem: parseInt(formData.quilometragem) || 0,
+            valor_retoma: parseFloat(formData.valor_retoma) || 0,
+            carrocaria,
+            mecanica,
+            damage_points: damagePoints
+          };
+
+          if (editData) {
+            await api.retomas.update(editData.id, payload);
+          } else {
+            await api.retomas.create(payload);
+          }
+
+          onSuccess();
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <form onSubmit={handleSubmit}>
+          {error && <div className="error-message">{error}</div>}
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Dados da Viatura</h2>
+            </div>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Marca / Modelo *</label>
+                <input value={formData.marca_modelo} onChange={e => setFormData({...formData, marca_modelo: e.target.value})} required />
+              </div>
+              <div className="form-group">
+                <label>Quilometragem</label>
+                <input type="number" value={formData.quilometragem} onChange={e => setFormData({...formData, quilometragem: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Matrícula</label>
+                <input value={formData.matricula} onChange={e => setFormData({...formData, matricula: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Data da Matrícula</label>
+                <input type="date" value={formData.data_matricula} onChange={e => setFormData({...formData, data_matricula: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Combustível</label>
+                <select value={formData.combustivel} onChange={e => setFormData({...formData, combustivel: e.target.value})}>
+                  <option>Gasolina</option>
+                  <option>Gasóleo</option>
+                  <option>Híbrido</option>
+                  <option>Elétrico</option>
+                  <option>GPL</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Cilindrada</label>
+                <input value={formData.cilindrada} onChange={e => setFormData({...formData, cilindrada: e.target.value})} />
+              </div>
+            </div>
+            <div className="form-group" style={{ marginTop: 16 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                <input type="checkbox" checked={formData.reserva_propriedade} onChange={e => setFormData({...formData, reserva_propriedade: e.target.checked})} />
+                Reserva de propriedade
+              </label>
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Dados do Cliente</h2>
+            </div>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Nome *</label>
+                <input value={formData.cliente_nome} onChange={e => setFormData({...formData, cliente_nome: e.target.value})} required />
+              </div>
+              <div className="form-group">
+                <label>Telefone</label>
+                <input type="tel" value={formData.cliente_telefone} onChange={e => setFormData({...formData, cliente_telefone: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>E-mail</label>
+                <input type="email" value={formData.cliente_email} onChange={e => setFormData({...formData, cliente_email: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>NIF</label>
+                <input value={formData.cliente_nif} onChange={e => setFormData({...formData, cliente_nif: e.target.value})} />
+              </div>
+            </div>
+            <div className="form-group" style={{ marginTop: 16 }}>
+              <label>Interessado em</label>
+              <textarea rows="2" value={formData.interessado_em} onChange={e => setFormData({...formData, interessado_em: e.target.value})} />
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Estado da Retoma - Carroçaria</h2>
+            </div>
+            <div className="checkbox-grid">
+              {Object.keys(carrocaria).map(key => (
+                <div key={key} className={`checkbox-item ${carrocaria[key] ? 'checked' : 'unchecked'}`}>
+                  <input type="checkbox" id={`carr_${key}`} checked={carrocaria[key]} onChange={e => setCarrocaria({...carrocaria, [key]: e.target.checked})} />
+                  <label htmlFor={`carr_${key}`}>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Estado da Retoma - Mecânica</h2>
+            </div>
+            <div className="checkbox-grid">
+              {Object.keys(mecanica).map(key => (
+                <div key={key} className={`checkbox-item ${mecanica[key] ? 'checked' : 'unchecked'}`}>
+                  <input type="checkbox" id={`mec_${key}`} checked={mecanica[key]} onChange={e => setMecanica({...mecanica, [key]: e.target.checked})} />
+                  <label htmlFor={`mec_${key}`}>{key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Mapa de Danos</h2>
+            </div>
+            <DamageMap damagePoints={damagePoints} onChange={setDamagePoints} />
+          </div>
+
+          <div className="card">
+            <div className="card-header">
+              <h2>Dados da Retoma</h2>
+            </div>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Valor da Retoma (€)</label>
+                <input type="number" step="0.01" value={formData.valor_retoma} onChange={e => setFormData({...formData, valor_retoma: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label>Status</label>
+                <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})}>
+                  <option value="pendente">Pendente</option>
+                  <option value="aprovado">Aprovado</option>
+                  <option value="rejeitado">Rejeitado</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group" style={{ marginTop: 16 }}>
+              <label>Observações</label>
+              <textarea rows="4" value={formData.observacoes} onChange={e => setFormData({...formData, observacoes: e.target.value})} placeholder="O valor da retoma pode diminuir em função da variação do valor de mercado do veículo e/ou desconformidade verificada aquando da entrega." />
+            </div>
+          </div>
+
+          <div className="btn-group">
+            <button className="btn btn-primary" type="submit" disabled={loading}>
+              {loading ? 'A guardar...' : (editData ? 'Atualizar' : 'Guardar')} Retoma
+            </button>
+            <button className="btn btn-secondary" type="button" onClick={onCancel}>Cancelar</button>
+          </div>
+        </form>
+      );
+    }
+
+    function Dashboard({ user, onLogout }) {
+      const [view, setView] = useState('list');
+      const [retomas, setRetomas] = useState([]);
+      const [users, setUsers] = useState([]);
+      const [groups, setGroups] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState('');
+      const [editingRetoma, setEditingRetoma] = useState(null);
+      const [showUserModal, setShowUserModal] = useState(false);
+
+      const loadData = async () => {
+        setLoading(true);
+        try {
+          const [retomasData, groupsData] = await Promise.all([
+            api.retomas.list(),
+            api.groups.list()
+          ]);
+          setRetomas(retomasData);
+          setGroups(groupsData);
+
+          if (user.is_admin) {
+            const usersData = await api.users.list();
+            setUsers(usersData);
+          }
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      useEffect(() => {
+        loadData();
+      }, []);
+
+      const handleLogout = async () => {
+        try {
+          await api.auth.signout();
+        } catch (err) {
+        } finally {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          onLogout();
+        }
+      };
+
+      const handleDeleteRetoma = async (id) => {
+        if (!confirm('Tem certeza que deseja eliminar esta retoma?')) return;
+        try {
+          await api.retomas.delete(id);
+          loadData();
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+
+      const downloadExport = (url) => {
+        const token = localStorage.getItem('token');
+        const a = document.createElement('a');
+        a.href = `${url}?token=${token}`;
+        a.download = true;
+        a.click();
+      };
+
+      const groupName = user.groups?.display_name || 'Utilizador';
+      const canCreate = user.is_admin || user.groups?.name === 'comercial';
+
+      return (
+        <div>
+          <div className="top-bar">
+            <div>
+              <div className="logo">AUTO ZARCO</div>
+              <div style={{ fontSize: 12, color: '#cbd5e0', marginTop: 4 }}>Sistema de Avaliação de Retomas</div>
+            </div>
+            <div className="user-info">
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 600 }}>{user.full_name || user.username}</div>
+                <div style={{ fontSize: 12, color: '#cbd5e0' }}>{groupName}</div>
+              </div>
+              <div className="badge">{groupName}</div>
+              <button className="btn btn-secondary" style={{ padding: '8px 16px' }} onClick={handleLogout}>Sair</button>
+            </div>
+          </div>
+
+          <div className="container">
+            {error && <div className="error-message">{error}</div>}
+
+            <div className="tabs">
+              <button className={`tab ${view === 'list' ? 'active' : ''}`} onClick={() => setView('list')}>Retomas</button>
+              {canCreate && <button className={`tab ${view === 'new' ? 'active' : ''}`} onClick={() => { setView('new'); setEditingRetoma(null); }}>Nova Retoma</button>}
+              {user.is_admin && <button className={`tab ${view === 'users' ? 'active' : ''}`} onClick={() => setView('users')}>Utilizadores</button>}
+            </div>
+
+            {view === 'list' && (
+              <div className="card">
+                <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <h2>Lista de Retomas ({retomas.length})</h2>
+                  <div className="btn-group" style={{ margin: 0 }}>
+                    <button className="btn btn-secondary" style={{ padding: '8px 16px' }} onClick={() => downloadExport(api.retomas.exportCSV())}>Exportar CSV</button>
+                    <button className="btn btn-secondary" style={{ padding: '8px 16px' }} onClick={() => downloadExport(api.retomas.exportPDF())}>Exportar PDF</button>
+                  </div>
+                </div>
+                {loading ? (
+                  <div className="loading">A carregar...</div>
+                ) : (
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Cliente</th>
+                        <th>Veículo</th>
+                        <th>Matrícula</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {retomas.map(r => (
+                        <tr key={r.id}>
+                          <td>{new Date(r.created_at).toLocaleDateString('pt-PT')}</td>
+                          <td>{r.cliente_nome}</td>
+                          <td>{r.marca_modelo}</td>
+                          <td>{r.matricula}</td>
+                          <td>€{r.valor_retoma || 0}</td>
+                          <td><span className={`status-badge status-${r.status}`}>{r.status}</span></td>
+                          <td>
+                            <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={() => { setEditingRetoma(r); setView('new'); }}>Editar</button>
+                            {(user.is_admin || user.groups?.name === 'comercial' || user.groups?.name === 'gerencia') && (
+                              <button className="btn btn-danger" style={{ padding: '6px 12px', fontSize: 12, marginLeft: 8 }} onClick={() => handleDeleteRetoma(r.id)}>Eliminar</button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            )}
+
+            {view === 'new' && (
+              <RetomaForm
+                editData={editingRetoma}
+                onSuccess={() => { loadData(); setView('list'); setEditingRetoma(null); }}
+                onCancel={() => { setView('list'); setEditingRetoma(null); }}
+              />
+            )}
+
+            {view === 'users' && user.is_admin && (
+              <UserManagement users={users} groups={groups} onUpdate={loadData} />
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function UserManagement({ users, groups, onUpdate }) {
+      const [showModal, setShowModal] = useState(false);
+      const [editUser, setEditUser] = useState(null);
+      const [formData, setFormData] = useState({ email: '', password: '', username: '', full_name: '', group_id: '', is_admin: false });
+      const [error, setError] = useState('');
+      const [loading, setLoading] = useState(false);
+
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        try {
+          if (editUser) {
+            await api.users.update(editUser.id, formData);
+          } else {
+            await api.users.create(formData);
+          }
+          setShowModal(false);
+          setEditUser(null);
+          setFormData({ email: '', password: '', username: '', full_name: '', group_id: '', is_admin: false });
+          onUpdate();
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleDelete = async (id) => {
+        if (!confirm('Tem certeza que deseja eliminar este utilizador?')) return;
+        try {
+          await api.users.delete(id);
+          onUpdate();
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+
+      return (
+        <div className="card">
+          <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h2>Gestão de Utilizadores ({users.length})</h2>
+            <button className="btn btn-success" onClick={() => { setEditUser(null); setFormData({ email: '', password: '', username: '', full_name: '', group_id: '', is_admin: false }); setShowModal(true); }}>
+              Novo Utilizador
+            </button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Username</th>
+                <th>Grupo</th>
+                <th>Admin</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map(u => (
+                <tr key={u.id}>
+                  <td>{u.full_name}</td>
+                  <td>{u.username}</td>
+                  <td>{u.groups?.display_name || '-'}</td>
+                  <td>{u.is_admin ? '✓' : '-'}</td>
+                  <td>
+                    <button className="btn btn-primary" style={{ padding: '6px 12px', fontSize: 12 }} onClick={() => { setEditUser(u); setFormData({ username: u.username, full_name: u.full_name, group_id: u.group_id, is_admin: u.is_admin }); setShowModal(true); }}>Editar</button>
+                    <button className="btn btn-danger" style={{ padding: '6px 12px', fontSize: 12, marginLeft: 8 }} onClick={() => handleDelete(u.id)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {showModal && (
+            <div className="modal" onClick={() => setShowModal(false)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
+                <h2>{editUser ? 'Editar Utilizador' : 'Novo Utilizador'}</h2>
+                {error && <div className="error-message">{error}</div>}
+                <form onSubmit={handleSubmit}>
+                  {!editUser && (
+                    <>
+                      <div className="form-group">
+                        <label>Email *</label>
+                        <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Palavra-passe *</label>
+                        <input type="password" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} required />
+                      </div>
+                    </>
+                  )}
+                  <div className="form-group">
+                    <label>Username *</label>
+                    <input value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Nome Completo</label>
+                    <input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} />
+                  </div>
+                  <div className="form-group">
+                    <label>Grupo</label>
+                    <select value={formData.group_id} onChange={e => setFormData({...formData, group_id: e.target.value})}>
+                      <option value="">Sem grupo</option>
+                      {groups.map(g => <option key={g.id} value={g.id}>{g.display_name}</option>)}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                      <input type="checkbox" checked={formData.is_admin} onChange={e => setFormData({...formData, is_admin: e.target.checked})} />
+                      Administrador
+                    </label>
+                  </div>
+                  <div className="btn-group">
+                    <button className="btn btn-primary" type="submit" disabled={loading}>
+                      {loading ? 'A guardar...' : 'Guardar'}
+                    </button>
+                    <button className="btn btn-secondary" type="button" onClick={() => setShowModal(false)}>Cancelar</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function App() {
+      const [user, setUser] = useState(null);
+      const [loading, setLoading] = useState(true);
+
+      useEffect(() => {
+        const token = localStorage.getItem('token');
+        const savedUser = localStorage.getItem('user');
+
+        if (token && savedUser) {
+          try {
+            setUser(JSON.parse(savedUser));
+          } catch (err) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+          }
+        }
+        setLoading(false);
+      }, []);
+
+      if (loading) {
+        return <div className="loading">A carregar...</div>;
+      }
+
+      return user ? (
+        <Dashboard user={user} onLogout={() => setUser(null)} />
+      ) : (
+        <Login onLogin={setUser} />
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
