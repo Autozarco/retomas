@@ -25,10 +25,15 @@ router.post('/', authMiddleware, requireAdmin, async (req, res) => {
   const { email, password, username, full_name, group_id, is_admin } = req.body;
 
   try {
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
-      email_confirm: true
+      options: {
+        data: {
+          username,
+          full_name
+        }
+      }
     });
 
     if (authError) {
@@ -99,13 +104,7 @@ router.delete('/:id', authMiddleware, requireAdmin, async (req, res) => {
       return res.status(400).json({ error: profileError.message });
     }
 
-    const { error: authError } = await supabase.auth.admin.deleteUser(id);
-
-    if (authError) {
-      return res.status(400).json({ error: authError.message });
-    }
-
-    res.json({ message: 'User deleted successfully' });
+    res.json({ message: 'User profile deleted successfully. Note: The auth account still exists and needs to be removed via Supabase Dashboard.' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

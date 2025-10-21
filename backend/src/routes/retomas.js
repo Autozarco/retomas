@@ -29,6 +29,61 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
+router.get('/export/csv', authMiddleware, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('retomas')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    const parser = new Parser();
+    const csv = parser.parse(data);
+
+    res.header('Content-Type', 'text/csv');
+    res.attachment('retomas.csv');
+    res.send(csv);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.get('/export/pdf', authMiddleware, async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('retomas')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    const doc = new PDFDocument({ margin: 30, size: 'A4' });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=retomas.pdf');
+    doc.pipe(res);
+
+    doc.fontSize(18).text('AUTO ZARCO - Relatório de Retomas', { align: 'center' });
+    doc.moveDown();
+
+    data.forEach(r => {
+      doc.fontSize(10).text(`ID: ${r.id}`);
+      doc.text(`Cliente: ${r.cliente_nome} | Veículo: ${r.marca_modelo}`);
+      doc.text(`Matrícula: ${r.matricula} | Valor: €${r.valor_retoma || 0}`);
+      doc.text(`Status: ${r.status}`);
+      doc.moveDown(0.5);
+    });
+
+    doc.end();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 router.get('/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
 
@@ -180,61 +235,6 @@ router.delete('/:id', authMiddleware, requireGroup('comercial', 'gerencia'), asy
     }
 
     res.json({ message: 'Retoma deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get('/export/csv', authMiddleware, async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('retomas')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    const parser = new Parser();
-    const csv = parser.parse(data);
-
-    res.header('Content-Type', 'text/csv');
-    res.attachment('retomas.csv');
-    res.send(csv);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-router.get('/export/pdf', authMiddleware, async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('retomas')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    const doc = new PDFDocument({ margin: 30, size: 'A4' });
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=retomas.pdf');
-    doc.pipe(res);
-
-    doc.fontSize(18).text('AUTO ZARCO - Relatório de Retomas', { align: 'center' });
-    doc.moveDown();
-
-    data.forEach(r => {
-      doc.fontSize(10).text(`ID: ${r.id}`);
-      doc.text(`Cliente: ${r.cliente_nome} | Veículo: ${r.marca_modelo}`);
-      doc.text(`Matrícula: ${r.matricula} | Valor: €${r.valor_retoma || 0}`);
-      doc.text(`Status: ${r.status}`);
-      doc.moveDown(0.5);
-    });
-
-    doc.end();
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

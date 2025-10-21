@@ -60,6 +60,18 @@ Após fazer login como admin:
      - **Gerência**: Acesso total a todas as retomas e relatórios
    - **Administrador**: marque apenas se quiser dar permissões de admin
 
+**Nota Importante sobre Email de Confirmação:**
+- Por padrão, Supabase envia um email de confirmação para novos utilizadores
+- Para uso interno, pode desabilitar isso no Dashboard do Supabase:
+  - Vá para **Authentication** > **Providers** > **Email**
+  - Desmarque "Confirm email"
+- Alternativamente, confirme os emails manualmente no Dashboard em **Authentication** > **Users**
+
+**Nota sobre Eliminação de Utilizadores:**
+- Eliminar um utilizador remove apenas o perfil da aplicação
+- A conta de autenticação permanece no Supabase
+- Para remover completamente, você precisa eliminar o utilizador também no Dashboard do Supabase em **Authentication** > **Users**
+
 ## Grupos e Permissões
 
 ### Comercial

@@ -785,12 +785,31 @@
         }
       };
 
-      const downloadExport = (url) => {
+      const downloadExport = async (url) => {
         const token = localStorage.getItem('token');
-        const a = document.createElement('a');
-        a.href = `${url}?token=${token}`;
-        a.download = true;
-        a.click();
+        try {
+          const response = await fetch(url, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error('Export failed');
+          }
+
+          const blob = await response.blob();
+          const downloadUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = url.includes('csv') ? 'retomas.csv' : 'retomas.pdf';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(downloadUrl);
+        } catch (err) {
+          alert('Erro ao exportar: ' + err.message);
+        }
       };
 
       const groupName = user.groups?.display_name || 'Utilizador';
